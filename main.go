@@ -7,9 +7,9 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ipoluianov/tapp/api"
 )
 
 func getAccountAuth(client *ethclient.Client, accountAddress string) *bind.TransactOpts {
@@ -51,20 +51,7 @@ func getAccountAuth(client *ethclient.Client, accountAddress string) *bind.Trans
 }
 
 func main() {
-	fmt.Println("begin")
-	fmt.Println("dial")
-	client, err := ethclient.Dial("http://127.0.0.1:8545")
-	if err != nil {
-		fmt.Println("ERROR:", err)
-		return
-	}
-
-	//auth := getAccountAuth(client, "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266")
-
-	bal, err := client.BalanceAt(context.Background(), common.HexToAddress("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"), nil)
-	fmt.Println(bal)
-
-	fmt.Println("connected")
-	client.Close()
-	fmt.Println("end")
+	shop := api.NewShop("./", "http://127.0.0.1:8545", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
+	shop.Load()
+	shop.Update()
 }
