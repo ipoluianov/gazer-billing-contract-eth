@@ -8,4 +8,9 @@ client, err := ethclient.Dial("http://127.0.0.1:7545")
 		panic(err)
 	}
 
-    
+vue:
+pnx run dev
+
+node:
+npx hardhat run ./scripts/deploy.js --network localhost
+
