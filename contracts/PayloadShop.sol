@@ -15,6 +15,7 @@ contract PayloadShop {
     mapping(uint256 => Record) public records;
     mapping(address => RecordsOfUser) private recordsOfUser;
     uint256 public recordsCount = 0;
+    address public owner;
 
     event Registered(
         address indexed _owner,
@@ -22,6 +23,11 @@ contract PayloadShop {
     );
 
     constructor() {
+        owner = msg.sender;
+    }
+
+    function getBalance() public view returns(uint) {
+        return address(this).balance;
     }
 
     function getRecordsOfUser(
@@ -50,5 +56,10 @@ contract PayloadShop {
         emit Registered(msg.sender, _payload);
 
         return recordId;
+    }
+
+    function withdrawAll(address payable _to) public {
+        require(owner == _to);
+        _to.transfer(address(this).balance);
     }
 }
