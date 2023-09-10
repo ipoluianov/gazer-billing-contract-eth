@@ -8,14 +8,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 type Shop struct {
-	lastId  int64
-	records []ShopRecord
+	lastId     int64
+	records    []ShopRecord
+	recordsMap map[string]string
+	mtx        sync.Mutex
 
 	dbPath          string
 	connectionPoint string
@@ -33,6 +36,7 @@ func NewShop(dbPath string, connectionPoint string, contractAddress string) *Sho
 	c.dbPath = dbPath
 	c.connectionPoint = connectionPoint
 	c.contractAddress = contractAddress
+	c.recordsMap = make(map[string]string)
 	return &c
 }
 
@@ -53,15 +57,18 @@ func (c *Shop) parseAndAddLine(line string) {
 	ethAddress := parts[1]
 	xchgAddress := parts[2]
 
+	c.mtx.Lock()
 	var rec ShopRecord
 	rec.id = id
 	rec.address = ethAddress
 	rec.payload = xchgAddress
 	c.records = append(c.records, rec)
-
+	c.recordsMap[rec.payload] = rec.address
 	if rec.id > c.lastId {
 		c.lastId = rec.id
 	}
+	c.mtx.Unlock()
+
 	fmt.Println("loaded row", line)
 }
 
@@ -76,18 +83,23 @@ func (c *Shop) addRecord(id int64, ethAddress string, xchgAddressBS []byte) erro
 
 	xchgAddress := strings.ToLower(base32.StdEncoding.EncodeToString(xchgAddressBS))
 
+	c.mtx.Lock()
 	var r ShopRecord
 	r.id = id
 	r.address = ethAddress
 	r.payload = xchgAddress
 	c.records = append(c.records, r)
+	c.recordsMap[r.payload] = r.address
 	err := c.appendLineToFile(r)
 	if err != nil {
+		c.mtx.Unlock()
 		return err
 	}
 	if r.id > c.lastId {
 		c.lastId = r.id
 	}
+	c.mtx.Unlock()
+
 	return nil
 }
 
@@ -130,12 +142,12 @@ func (c *Shop) Load() error {
 }
 
 func (c *Shop) Update() error {
-	client, err := ethclient.Dial("http://127.0.0.1:8545")
+	client, err := ethclient.Dial(c.connectionPoint)
 	if err != nil {
 		return err
 	}
 
-	contract, err := NewApiCaller(common.HexToAddress("0x5FbDB2315678afecb367f032d93F642f64180aa3"), client)
+	contract, err := NewApiCaller(common.HexToAddress(c.contractAddress), client)
 	if err != nil {
 		return err
 	}
@@ -146,15 +158,24 @@ func (c *Shop) Update() error {
 	}
 
 	fmt.Println("recordsCount", recordsCount)
+	count := 0
 	for i := int64(c.lastId + 1); i < recordsCount.Int64()+1; i++ {
+		count++
+		if count > 10 {
+			break
+		}
 		fmt.Println("Processing id =", i)
 		rec, err := contract.Records(nil, big.NewInt(i))
 		if err != nil {
 			return err
 		}
-		err = c.addRecord(i, rec.Owner.Hex(), rec.Payload[:])
-		if err != nil {
-			fmt.Println("ADD RECORD ERROR:", err)
+		if rec.IsRegistered {
+			err = c.addRecord(i, rec.Owner.Hex(), rec.Payload[:])
+			if err != nil {
+				fmt.Println("ADD RECORD ERROR:", err)
+			}
+		} else {
+			fmt.Println("skip", i)
 		}
 	}
 
@@ -162,5 +183,10 @@ func (c *Shop) Update() error {
 	return nil
 }
 
-func (c *Shop) GetRecords() {
+func (c *Shop) IsPremium(xchgAddress string) bool {
+	xchgAddress = strings.Trim(xchgAddress, "# \r\n")
+	c.mtx.Lock()
+	_, exists := c.recordsMap[xchgAddress]
+	c.mtx.Unlock()
+	return exists
 }
