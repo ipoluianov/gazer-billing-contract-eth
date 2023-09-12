@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ipoluianov/tapp/api"
+	"github.com/ipoluianov/gazer-billing-contract-eth/api"
 )
 
 func getAccountAuth(client *ethclient.Client, accountAddress string) *bind.TransactOpts {

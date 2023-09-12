@@ -18,6 +18,6 @@
   "homepage": "https://github.com/ipoluianov/gazer-billing-contract-eth#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
-    "hardhat": "^2.17.1"
+    "hardhat": "^2.17.3"
   }
 }

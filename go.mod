@@ -1,4 +1,4 @@
-module github.com/ipoluianov/tapp
+module github.com/ipoluianov/gazer-billing-contract-eth
 
 go 1.20
 
