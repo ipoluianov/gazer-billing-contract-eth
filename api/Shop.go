@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/base32"
 	"errors"
-	"fmt"
 	"math/big"
 	"os"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ipoluianov/gomisc/logger"
 )
 
 type Shop struct {
@@ -69,7 +69,7 @@ func (c *Shop) parseAndAddLine(line string) {
 	}
 	c.mtx.Unlock()
 
-	fmt.Println("loaded row", line)
+	logger.Println("Shop::load line", rec.id, rec.address, rec.payload)
 }
 
 func (c *Shop) addRecord(id int64, ethAddress string, xchgAddressBS []byte) error {
@@ -157,14 +157,14 @@ func (c *Shop) Update() error {
 		return err
 	}
 
-	fmt.Println("recordsCount", recordsCount)
+	logger.Println("Shop::Update Count=", recordsCount, "address=", c.contractAddress, "url=", c.connectionPoint)
 	count := 0
 	for i := int64(c.lastId + 1); i < recordsCount.Int64()+1; i++ {
 		count++
 		if count > 10 {
 			break
 		}
-		fmt.Println("Processing id =", i)
+		logger.Println("Shop::Update ProcessingRecord=", i)
 		rec, err := contract.Records(nil, big.NewInt(i))
 		if err != nil {
 			return err
@@ -172,10 +172,10 @@ func (c *Shop) Update() error {
 		if rec.IsRegistered {
 			err = c.addRecord(i, rec.Owner.Hex(), rec.Payload[:])
 			if err != nil {
-				fmt.Println("ADD RECORD ERROR:", err)
+				logger.Println("Shop::Update ADD RECORD ERROR:", err)
 			}
 		} else {
-			fmt.Println("skip", i)
+			logger.Println("Shop::Update Skip=", i)
 		}
 	}
 
