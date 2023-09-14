@@ -1,9 +1,12 @@
+
 <template>
     <div class="row">
-        <img src="mainicon64.png" />
+        <img src="@/assets/mainicon64.png" />
         <div class="title">Gazer Cloud Premium</div>
     </div>
 </template>
+
+
 
 <style scoped>
 .row {

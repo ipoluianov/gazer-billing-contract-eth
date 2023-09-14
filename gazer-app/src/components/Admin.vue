@@ -112,13 +112,13 @@ export default {
   <div class="main" style="border-top: 10px solid #DDD; margin-top: 30px; background-color: #555;">
     <h1>Admin</h1>
     <div>
-      <div>contract balance: {{ this.balance }} ETH</div>
-      <div>contract currentPrice: {{ this.currentPrice }} ETH</div>
+      <div>contract balance: {{ this.balance }} BNB</div>
+      <div>contract currentPrice: {{ this.currentPrice }} BNB</div>
     </div>
     <div>
       <h1>SetPrice</h1>
       <input v-model="this.priceToSet" />
-      <button @click="this.setPrice">SET PRICE (ETH)</button>
+      <button @click="this.setPrice">SET PRICE (BNB)</button>
     </div>
     <div>
       <h1>Withdraw</h1>

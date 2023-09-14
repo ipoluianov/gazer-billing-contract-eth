@@ -47,7 +47,7 @@ export default {
       console.log("Register", this.domainNameToRegister);
       console.log("Signer", await this.signer.getAddress());
       try {
-        if (this.chainId != 1 && this.chainId != 31337) {
+        if (this.chainId != 56 && this.chainId != 31337) {
           throw "Wrong Chain";
         }
         let xchgAddr = xchg_utils.xchgAddressToBinary(this.xchgAddress);

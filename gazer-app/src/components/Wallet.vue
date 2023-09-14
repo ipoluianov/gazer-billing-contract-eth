@@ -17,7 +17,7 @@
   <div class="header" v-if="this.connected">
     <div class="widget">
       <div v-if="this.connected" class="widget">ChainID: {{ this.chainName }}</div>
-      <div v-if="this.chainId != 1 && this.chainId != 31337" style="color: #FF0000; font-weight: bold; font-size: 24pt;">
+      <div v-if="this.chainId != 56 && this.chainId != 31337" style="color: #FF0000; font-weight: bold; font-size: 24pt;">
         Wrong ChainID
       </div>
     </div>
@@ -99,7 +99,7 @@ export default {
         console.log("------------- CHAIN:" + this.chainId);
         let currencyCode = wallet.getCurrencyCode(this.chainId);
         this.chainName = wallet.getChainName(this.chainId);
-        this.balanceCurrency = "ETH";
+        this.balanceCurrency = currencyCode;
       });
     },
   },
