@@ -5,7 +5,7 @@ export default {
     // input: xchg address
     // output: bytes32
     xchgAddressToBinary(addr) {
-        if (addr.length != 49) {
+        if (addr.length != 49 && addr.length != 48) {
           throw "wrong xchg address";
         }
         const toHexString = (bytes) => {
@@ -22,7 +22,8 @@ export default {
           }
           return res;
         };
-        addr = addr.substring(1);
+        if (addr[0] == '#')
+          addr = addr.substring(1);
         let addrAsBytes = b32.decode32(addr)
         let b321 = toHexString(js_utils.binaryStringToArrayBuffer(addrAsBytes));
         console.log("-------b32", b321, b321.length, "]");

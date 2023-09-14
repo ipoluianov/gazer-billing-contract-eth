@@ -17,6 +17,8 @@ contract PayloadShop {
     uint256 public recordsCount = 0;
     address public owner;
 
+    uint256 public currentPrice = 0;
+
     event Registered(
         address indexed _owner,
         bytes32 _payload
@@ -44,6 +46,9 @@ contract PayloadShop {
     }
 
     function buy(bytes32 _payload) public payable returns (uint256) {
+        
+        require(msg.value >= currentPrice, "---:CERR:WRONG_PRICE:---");
+
         uint256 recordId = recordsCount + 1;
         records[recordId] = Record(
             true,
@@ -59,7 +64,12 @@ contract PayloadShop {
     }
 
     function withdrawAll(address payable _to) public {
-        require(owner == _to);
+        require(owner == msg.sender, "---:CERR:ACCESS_DENIED:---");
         _to.transfer(address(this).balance);
+    }
+
+    function setPrice(uint256 price) public {
+        require(owner == msg.sender, "---:CERR:ACCESS_DENIED:---");
+        currentPrice = price;
     }
 }

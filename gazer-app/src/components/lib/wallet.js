@@ -64,6 +64,28 @@ export default {
         return '---';
     }
   },
+
+  getChainName(chainId) {
+    switch (chainId) {
+      case 1:
+        return 'Ethereum Mainnet';
+      case 3:
+        return 'Ropsten Testnet'; // Ropsten Testnet
+      case 4:
+        return 'Rinkeby Testnet'; // Rinkeby Testnet
+      case 5:
+        return 'Goerli Testnet'; // Goerli Testnet
+      case 42:
+        return 'Kovan Testnet'; // Kovan Testnet
+      case 56:
+        return 'Binance Smart Chain Mainnet'; // Binance Smart Chain Mainnet
+      case 97:
+        return 'Binance Smart Chain Testnet'; // Binance Smart Chain Testnet
+      default:
+        return "chainId#" + chainId;
+    }
+  },
+
   shortAddress(addr) {
     if (addr.length < 40) {
       return addr;

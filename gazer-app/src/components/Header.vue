@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <img src="mainicon64.png" />
-        <div class="title">Gazer ProNodes</div>
+        <div class="title">Gazer Cloud Premium</div>
     </div>
 </template>
 

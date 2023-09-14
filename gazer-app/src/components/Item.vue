@@ -18,7 +18,7 @@ export default {
 <template>
     <div class="item">
         <div class="subitem">
-            <div class="xchg_addr">{{ this.xchgAddressString }}</div>
+            <div class="xchg_addr">#{{ this.xchgAddressString }}</div>
         </div>
     </div>
     
@@ -29,8 +29,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    border-bottom: 1px solid white;
-    padding-top: 5px;
+    border-bottom: 1px solid #555;
 }
 
 .subitem {
@@ -39,14 +38,10 @@ export default {
     flex-direction: row;
 }
 
-.domain_name {
-    font-size: 16pt;
-    color: white;
-}
-
 .xchg_addr {
     font-size: 11pt;
-    color: #777777;
+    color: #ffd700;
+    font-family: monospace;
 }
 
 .button_register_subdomain {
