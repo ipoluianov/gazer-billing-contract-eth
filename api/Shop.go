@@ -157,7 +157,7 @@ func (c *Shop) Update() error {
 		return err
 	}
 
-	logger.Println("Shop::Update Count=", recordsCount, "address=", c.contractAddress, "url=", c.connectionPoint)
+	logger.Println("Shop::Update Count=", recordsCount, "address=", c.contractAddress)
 	count := 0
 	for i := int64(c.lastId + 1); i < recordsCount.Int64()+1; i++ {
 		count++
