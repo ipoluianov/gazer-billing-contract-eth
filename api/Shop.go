@@ -197,3 +197,11 @@ func (c *Shop) RecordsCount() int {
 	c.mtx.Unlock()
 	return result
 }
+
+func (c *Shop) Records() []ShopRecord {
+	c.mtx.Lock()
+	result := make([]ShopRecord, len(c.records))
+	copy(result, c.records)
+	c.mtx.Unlock()
+	return result
+}
