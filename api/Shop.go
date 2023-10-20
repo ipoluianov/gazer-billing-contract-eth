@@ -190,3 +190,10 @@ func (c *Shop) IsPremium(xchgAddress string) bool {
 	c.mtx.Unlock()
 	return exists
 }
+
+func (c *Shop) RecordsCount() int {
+	c.mtx.Lock()
+	result := len(c.records)
+	c.mtx.Unlock()
+	return result
+}
