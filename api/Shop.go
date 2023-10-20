@@ -26,9 +26,9 @@ type Shop struct {
 }
 
 type ShopRecord struct {
-	id      int64
-	address string
-	payload string
+	Id      int64  `json:"id"`
+	Address string `json:"addr"`
+	Payload string `json:"payload"`
 }
 
 func NewShop(dbPath string, connectionPoint string, contractAddress string) *Shop {
@@ -59,17 +59,17 @@ func (c *Shop) parseAndAddLine(line string) {
 
 	c.mtx.Lock()
 	var rec ShopRecord
-	rec.id = id
-	rec.address = ethAddress
-	rec.payload = xchgAddress
+	rec.Id = id
+	rec.Address = ethAddress
+	rec.Payload = xchgAddress
 	c.records = append(c.records, rec)
-	c.recordsMap[rec.payload] = rec.address
-	if rec.id > c.lastId {
-		c.lastId = rec.id
+	c.recordsMap[rec.Payload] = rec.Address
+	if rec.Id > c.lastId {
+		c.lastId = rec.Id
 	}
 	c.mtx.Unlock()
 
-	logger.Println("Shop::load line", rec.id, rec.address, rec.payload)
+	logger.Println("Shop::load line", rec.Id, rec.Address, rec.Payload)
 }
 
 func (c *Shop) addRecord(id int64, ethAddress string, xchgAddressBS []byte) error {
@@ -85,18 +85,18 @@ func (c *Shop) addRecord(id int64, ethAddress string, xchgAddressBS []byte) erro
 
 	c.mtx.Lock()
 	var r ShopRecord
-	r.id = id
-	r.address = ethAddress
-	r.payload = xchgAddress
+	r.Id = id
+	r.Address = ethAddress
+	r.Payload = xchgAddress
 	c.records = append(c.records, r)
-	c.recordsMap[r.payload] = r.address
+	c.recordsMap[r.Payload] = r.Address
 	err := c.appendLineToFile(r)
 	if err != nil {
 		c.mtx.Unlock()
 		return err
 	}
-	if r.id > c.lastId {
-		c.lastId = r.id
+	if r.Id > c.lastId {
+		c.lastId = r.Id
 	}
 	c.mtx.Unlock()
 
@@ -108,7 +108,7 @@ func (c *Shop) appendLineToFile(rec ShopRecord) error {
 	if err != nil {
 		return err
 	}
-	_, err = file.WriteString(strconv.FormatInt(rec.id, 10) + ";" + rec.address + ";" + rec.payload + "\r\n")
+	_, err = file.WriteString(strconv.FormatInt(rec.Id, 10) + ";" + rec.Address + ";" + rec.Payload + "\r\n")
 	if err != nil {
 		file.Close()
 		return err
